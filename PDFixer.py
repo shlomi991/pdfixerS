@@ -27,6 +27,7 @@ class Globals:
         backup_before_fixer = "C:\\pdfixer_files\\BKbeforeFixer"
         fixer = "C:\\pdfixer_files\\fixer"
         temp = "C:\\pdfixer_files\\temp"
+        temp_pdf = "C:\\pdfixer_files\\temp_pdf"
         dest1= "C:\\pdfixer_files\\outbound"
         dest2= "C:\\pdfixer_files\\archive"
         output_dir = ""
@@ -34,38 +35,49 @@ class Globals:
 
         
 def move_copy_zip():
-    files = os.listdir(source)
+    files = os.listdir(Globals.source)
     for f in files
         if f.endswith('.zip')
-            shutil.copy(source+'/'+f, backup_before_fixer)
+            shutil.copy(Globals.source+'/'+f, Globals.backup_before_fixer)
             print("copied to BKbeforeFixer")
-            shutil.move(source+'/'+f, fixer)
+            shutil.move(Globals.source+'/'+f, Globals.fixer)
             print("moved to fixer")
 
     unpack_pdf()
 
 
 def extract_pdfs():
-    files = os.listdir(fixer)
+    files = os.listdir(Globals.fixer)
     for f in files 
         if f.endswith('.zip')
-            shutil.move(source+'/'+f, temp)
+            shutil.move(Globals.source+'/'+f, Globals.temp)
             print("moved to temp")
-            with zipfile.zip
+            with zipfile.zip(Globals.source+'/'+f, 'r') as file
+                file.extractall()
 
-            
+            extract_files = os.listdir(Globals.temp)    
+            for x in extract_files    
+                if x.endswith('.pdf')
+                    images = convert_from_path(x,  dpi=150, output_folder=Globals.temp_pdf, fmt='jpg')
+                    ###
+                    pdf = FPDF(orientation='P', format='A4')
+                    imgs = []
+
+                    img_list = [x for x in os.listdir(Globals.temp_pdf)]
+                        
+                    for img in img_list:
+                        pdf.add_page()
+                        imag = Globals.temp_pdf+"\\"+img
+                        pdf.image(imag, w=200, h=260)
+                    pdf.output("images.pdf")
+
+        
 
 
 
 
-            
 
 
-def finish_operation():
-    current = os.path.abspath(os.getcwd())
-    shutil.copy(current+"\\"+"images.pdf", Globals.output_dir)
-    delete_temp_dir()
-    root.quit()
 
 def unpack_pdf():
     images = convert_from_path(Globals.temporary_file,  dpi=150, output_folder=Globals.middlepath, fmt='jpg')
@@ -74,7 +86,7 @@ def unpack_pdf():
     imgs = []
 
     img_list = [x for x in os.listdir(Globals.middlepath)]
-        
+    
     for img in img_list:
         pdf.add_page()
         imag = Globals.middlepath+"\\"+img
@@ -82,6 +94,11 @@ def unpack_pdf():
     pdf.output("images.pdf")
     
         
+def finish_operation():
+    current = os.path.abspath(os.getcwd())
+    shutil.copy(current+"\\"+"images.pdf", Globals.output_dir)
+    delete_temp_dir()
+    root.quit()
 
 def main():
     files = os.listdir(source)
