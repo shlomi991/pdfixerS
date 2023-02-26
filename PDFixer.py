@@ -30,7 +30,7 @@ class Globals:
         temp_pdf = "C:\\pdfixer_files\\temp_pdf"
         dest1 = "C:\\pdfixer_files\\outbound"
         dest2 = "C:\\pdfixer_files\\archive"
-        output_after_extract = ""
+        output_after_extract = "C:\\pdfixer_files\\output_after_extract"
         temporary_file = ""
 
 
@@ -52,7 +52,7 @@ def extract_pdfs():
         if f.endswith('.zip'):
             shutil.move(Globals.fixer+'/'+f, Globals.temp)
             print("moved to temp")
-            with zipfile.zip(Globals.temp+'/'+f, 'r') as file
+            with zipfile.zip(Globals.temp+'/'+f, 'r') as file:
                 file.extractall()
 
             extract_files = os.listdir(Globals.temp)    
@@ -77,6 +77,11 @@ def extract_pdfs():
 
                 else:
                     shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
+
+            list_output_after_extract = os.listdir(output_after_extract)
+            with zipfile.ZipFile(f, 'w') as zip_file:
+
+                
 
         
 
