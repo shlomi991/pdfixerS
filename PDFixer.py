@@ -28,16 +28,16 @@ class Globals:
         fixer = "C:\\pdfixer_files\\fixer"
         temp = "C:\\pdfixer_files\\temp"
         temp_pdf = "C:\\pdfixer_files\\temp_pdf"
-        dest1= "C:\\pdfixer_files\\outbound"
-        dest2= "C:\\pdfixer_files\\archive"
-        output_dir = ""
+        dest1 = "C:\\pdfixer_files\\outbound"
+        dest2 = "C:\\pdfixer_files\\archive"
+        output_after_extract = ""
         temporary_file = ""
 
-        
+
 def move_copy_zip():
     files = os.listdir(Globals.source)
     for f in files
-        if f.endswith('.zip')
+        if f.endswith('.zip'):
             shutil.copy(Globals.source+'/'+f, Globals.backup_before_fixer)
             print("copied to BKbeforeFixer")
             shutil.move(Globals.source+'/'+f, Globals.fixer)
@@ -49,27 +49,41 @@ def move_copy_zip():
 def extract_pdfs():
     files = os.listdir(Globals.fixer)
     for f in files 
-        if f.endswith('.zip')
-            shutil.move(Globals.source+'/'+f, Globals.temp)
+        if f.endswith('.zip'):
+            shutil.move(Globals.fixer+'/'+f, Globals.temp)
             print("moved to temp")
-            with zipfile.zip(Globals.source+'/'+f, 'r') as file
+            with zipfile.zip(Globals.temp+'/'+f, 'r') as file
                 file.extractall()
 
             extract_files = os.listdir(Globals.temp)    
-            for x in extract_files    
-                if x.endswith('.pdf')
-                    images = convert_from_path(x,  dpi=150, output_folder=Globals.temp_pdf, fmt='jpg')
+            for s in extract_files    
+                if s.endswith('.pdf'):
+                    images = convert_from_path(Globals.temp+'/'+s,  dpi=150, output_folder=Globals.temp_pdf, fmt='jpg')
                     ###
                     pdf = FPDF(orientation='P', format='A4')
                     imgs = []
 
                     img_list = [x for x in os.listdir(Globals.temp_pdf)]
                         
-                    for img in img_list:
+                    for img in img_list
                         pdf.add_page()
                         imag = Globals.temp_pdf+"\\"+img
                         pdf.image(imag, w=200, h=260)
                     pdf.output("images.pdf")
+                    shutil.move(Globals.temp_pdf+'/'+s, Globals.output_after_extract)
+
+                if s.endswith('.xml'):
+                    shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
+
+                else:
+                    shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
+
+        
+
+
+
+
+
 
         
 
