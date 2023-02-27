@@ -80,18 +80,12 @@ def extract_pdfs():
 
             list_output_after_extract = os.listdir(output_after_extract)
             with zipfile.ZipFile(f, 'w') as zip_file:
+             for file_name in list_output_after_extract:
+                file_path = os.path.join(output_after_extract, file_name)
+                zip_file.write(file_path, file_name)
 
-                
-
-        
-
-
-
-
-
-
-        
-
+            
+            shutil.move(Globals.fixer+'/'+f, Globals.temp)
 
 
 
