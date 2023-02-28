@@ -81,7 +81,7 @@ def extract_pdfs():
                         pdf.add_page()
                         imag = Globals.temp_pdf+"\\"+img
                         pdf.image(imag, w=200, h=260)
-                    pdf.output(s)
+                    pdf.output("images.pdf")
                     shutil.move(Globals.temp_pdf+'/'+s, Globals.output_after_extract)
 
                 if s.endswith('.xml'):
