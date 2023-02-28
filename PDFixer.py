@@ -1,6 +1,7 @@
 import sys
 import os
 import shutil
+import glob
 import argparse
 from tkinter import filedialog
 import img2pdf
@@ -14,7 +15,7 @@ from tkinter import *
 from PIL import Image
 import zipfile
 
-poppler_path = r"C:\Users\User\Documents\poppler-22.11.0\Library\bin"
+# poppler_path = r"C:\Users\User\Documents\poppler-22.11.0\Library\bin"
 ###
 class ImageFormats:
         JPG = "jpg"
@@ -23,40 +24,51 @@ class ImageFormats:
         # PPM = "ppm"
         
 class Globals:
-        source = "C:\\pdfixer_files\\out"
-        backup_before_fixer = "C:\\pdfixer_files\\BKbeforeFixer"
-        fixer = "C:\\pdfixer_files\\fixer"
-        temp = "C:\\pdfixer_files\\temp"
-        temp_pdf = "C:\\pdfixer_files\\temp_pdf"
-        dest1 = "C:\\pdfixer_files\\outbound"
-        dest2 = "C:\\pdfixer_files\\archive"
-        output_after_extract = "C:\\pdfixer_files\\output_after_extract"
-        temporary_file = ""
+        source = "C:\\shlomi\\pdfixer_files\\out"
+        backup_before_fixer = "C:\\shlomi\\pdfixer_files\\BKbeforeFixer"
+        fixer = "C:\\shlomi\\pdfixer_files\\fixer"
+        temp = "C:\\shlomi\\pdfixer_files\\temp"
+        temp_pdf = "C:\\shlomi\\pdfixer_files\\temp_pdf"
+        dest1 = "C:\\shlomi\\pdfixer_files\\archive"
+        dest2 = "C:\\shlomi\\pdfixer_files\\outbound"
+        output_after_extract = "C:\\shlomi\\pdfixer_files\\output_after_extract"
 
 
 def move_copy_zip():
     files = os.listdir(Globals.source)
-    for f in files
+    for f in files:
         if f.endswith('.zip'):
             shutil.copy(Globals.source+'/'+f, Globals.backup_before_fixer)
             print("copied to BKbeforeFixer")
             shutil.move(Globals.source+'/'+f, Globals.fixer)
             print("moved to fixer")
 
-    unpack_pdf()
+
+def clean_temp():
+    files = glob.glob(Globals.temp+'/*')
+    for f in files:
+        os.remove(f)   
+
+def clean_output_after_extract():
+    files = glob.glob(Globals.output_after_extract+'/*')
+    for f in files:
+        os.remove(f)                
 
 
 def extract_pdfs():
     files = os.listdir(Globals.fixer)
-    for f in files 
+    for f in files: 
         if f.endswith('.zip'):
             shutil.move(Globals.fixer+'/'+f, Globals.temp)
             print("moved to temp")
-            with zipfile.zip(Globals.temp+'/'+f, 'r') as file:
-                file.extractall()
+            with zipfile.ZipFile(Globals.temp+'/'+f, 'r') as file:
+                file.extractall(path=Globals.temp)
+            print("extract in temp")
+            os.remove(Globals.temp+'/'+f)
+            print("delete zip in temp")
 
             extract_files = os.listdir(Globals.temp)    
-            for s in extract_files    
+            for s in extract_files:    
                 if s.endswith('.pdf'):
                     images = convert_from_path(Globals.temp+'/'+s,  dpi=150, output_folder=Globals.temp_pdf, fmt='jpg')
                     ###
@@ -65,11 +77,11 @@ def extract_pdfs():
 
                     img_list = [x for x in os.listdir(Globals.temp_pdf)]
                         
-                    for img in img_list
+                    for img in img_list:
                         pdf.add_page()
                         imag = Globals.temp_pdf+"\\"+img
                         pdf.image(imag, w=200, h=260)
-                    pdf.output("images.pdf")
+                    pdf.output(s)
                     shutil.move(Globals.temp_pdf+'/'+s, Globals.output_after_extract)
 
                 if s.endswith('.xml'):
@@ -78,44 +90,23 @@ def extract_pdfs():
                 else:
                     shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
 
-            list_output_after_extract = os.listdir(output_after_extract)
+            clean_temp()        
+
+            list_output_after_extract = os.listdir(Globals.output_after_extract)
             with zipfile.ZipFile(f, 'w') as zip_file:
              for file_name in list_output_after_extract:
-                file_path = os.path.join(output_after_extract, file_name)
+                file_path = os.path.join(Globals.output_after_extract, file_name)
                 zip_file.write(file_path, file_name)
 
-            
-            shutil.move(Globals.fixer+'/'+f, Globals.temp)
 
+            shutil.copy(Globals.output_after_extract+'/'+f, Globals.dest1)
+            shutil.move(Globals.output_after_extract+'/'+f, Globals.dest2)
 
-
-
-
-
-def unpack_pdf():
-    images = convert_from_path(Globals.temporary_file,  dpi=150, output_folder=Globals.middlepath, fmt='jpg')
-    ###
-    pdf = FPDF(orientation='P', format='A4')
-    imgs = []
-
-    img_list = [x for x in os.listdir(Globals.middlepath)]
-    
-    for img in img_list:
-        pdf.add_page()
-        imag = Globals.middlepath+"\\"+img
-        pdf.image(imag, w=200, h=260)
-    pdf.output("images.pdf")
-    
-        
-def finish_operation():
-    current = os.path.abspath(os.getcwd())
-    shutil.copy(current+"\\"+"images.pdf", Globals.output_dir)
-    delete_temp_dir()
-    root.quit()
+            clean_output_after_extract()
 
 def main():
-    files = os.listdir(source)
-    for f in files
+    move_copy_zip()
+    extract_pdfs()
     
 
     
