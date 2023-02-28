@@ -15,7 +15,7 @@ from tkinter import *
 from PIL import Image
 import zipfile
 
-# poppler_path = r"C:\Users\User\Documents\poppler-22.11.0\Library\bin"
+poppler_path = r"C:\Program Files\poppler-0.68.0_x86\poppler-0.68.0\bin"
 ###
 class ImageFormats:
         JPG = "jpg"
