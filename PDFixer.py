@@ -74,7 +74,7 @@ def extract_pdfs():
 
                 if s.endswith('.xml'):
                     shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
-
+                
                 else:
                     shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
 
