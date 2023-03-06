@@ -14,6 +14,7 @@ from tkinter import ttk
 from tkinter import * 
 from PIL import Image
 import zipfile
+import time 
 
 poppler_path = r"C:\Program Files\poppler-0.68.0_x86\poppler-0.68.0\bin"
 ###
@@ -29,9 +30,10 @@ class Globals:
         fixer = "C:\\shlomi\\pdfixer_files\\fixer"
         temp = "C:\\shlomi\\pdfixer_files\\temp"
         temp_pdf = "C:\\shlomi\\pdfixer_files\\temp_pdf"
+        output_after_extract = "C:\\shlomi\\pdfixer_files\\output_after_extract"
         dest1 = "C:\\shlomi\\pdfixer_files\\archive"
         dest2 = "C:\\shlomi\\pdfixer_files\\outbound"
-        output_after_extract = "C:\\shlomi\\pdfixer_files\\output_after_extract"
+        
 
 
 def move_copy_zip():
@@ -73,8 +75,8 @@ def extract_pdfs():
             os.remove(Globals.temp+'/'+f)
             print("delete zip in temp")
 
-            extract_files = os.listdir(Globals.temp)    
-            for s in extract_files:    
+            extracted_files = os.listdir(Globals.temp)    
+            for s in extracted_files:    
                 if s.endswith('.pdf'):      
                     images = convert_from_path(Globals.temp+'/'+s,  dpi=150, output_folder=Globals.temp_pdf, fmt='jpg')
                     ###
@@ -107,7 +109,7 @@ def extract_pdfs():
                 file_path = os.path.join(Globals.output_after_extract, file_name)
                 zip_file.write(file_path, file_name)
 
-            print("did extract")
+            print("extracted")
             shutil.copy(Globals.output_after_extract+'/'+f, Globals.dest1)
             shutil.move(Globals.output_after_extract+'/'+f, Globals.dest2)
 
@@ -116,10 +118,16 @@ def extract_pdfs():
  
 
 def main():
-    
-    move_copy_zip()
-    extract_pdfs()
-    clean_temp_pdf()  
+    while 1==1:
+        files = os.listdir(Globals.source)
+        if len(files) != 0:
+            move_copy_zip()
+            extract_pdfs()
+            clean_temp_pdf()
+            time.sleep(10)  
+
+        else:
+            time.sleep(10)      
     
 
     
