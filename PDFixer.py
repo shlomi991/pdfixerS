@@ -49,6 +49,12 @@ def clean_temp():
     for f in files:
         os.remove(f)   
 
+
+def clean_temp_pdf():
+    files = glob.glob(Globals.temp_pdf+'/*')
+    for f in files:
+        os.remove(f)           
+
 def clean_output_after_extract():
     files = glob.glob(Globals.output_after_extract+'/*')
     for f in files:
@@ -69,7 +75,7 @@ def extract_pdfs():
 
             extract_files = os.listdir(Globals.temp)    
             for s in extract_files:    
-                if s.endswith('.pdf'):
+                if s.endswith('.pdf'):      
                     images = convert_from_path(Globals.temp+'/'+s,  dpi=150, output_folder=Globals.temp_pdf, fmt='jpg')
                     ###
                     pdf = FPDF(orientation='P', format='A4')
@@ -92,23 +98,28 @@ def extract_pdfs():
                     shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
                 
 
-            clean_temp()        
+            clean_temp()     
 
+            os.chdir(Globals.output_after_extract)
             list_output_after_extract = os.listdir(Globals.output_after_extract)
             with zipfile.ZipFile(f, 'w') as zip_file:
              for file_name in list_output_after_extract:
                 file_path = os.path.join(Globals.output_after_extract, file_name)
                 zip_file.write(file_path, file_name)
 
-
+            print("did extract")
             shutil.copy(Globals.output_after_extract+'/'+f, Globals.dest1)
             shutil.move(Globals.output_after_extract+'/'+f, Globals.dest2)
 
+
             clean_output_after_extract()
+ 
 
 def main():
+    
     move_copy_zip()
     extract_pdfs()
+    clean_temp_pdf()  
     
 
     
