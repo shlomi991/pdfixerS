@@ -111,7 +111,7 @@ def extract_pdfs():
 
             print("extracted")
             shutil.copy(Globals.output_after_extract+'/'+f, Globals.dest1)
-            shutil.move(Globals.output_after_extract+'/'+f, Globals.dest2)
+            shutil.copy(Globals.output_after_extract+'/'+f, Globals.dest2)
 
 
             clean_output_after_extract()
