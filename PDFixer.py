@@ -89,12 +89,16 @@ def extract_pdfs():
                         pdf.add_page()
                         imag = Globals.temp_pdf+"\\"+img
                         pdf.image(imag, w=200, h=260)
-                        print("add page pdf")
+                        print("add page pdf" + img)
                     os.chdir(Globals.temp_pdf)
                     print("s=" + s)    
                     pdf.output(s)
 
                     shutil.move(Globals.temp_pdf+'/'+s, Globals.output_after_extract)
+                    img_list={}
+                    images={}
+                    clean_temp_pdf()
+
 
                 elif  s.endswith('.xml'):
                     shutil.move(Globals.temp+'/'+s, Globals.output_after_extract)
