@@ -128,10 +128,10 @@ def main():
             move_copy_zip()
             extract_pdfs()
             clean_temp_pdf()
-            time.sleep(10)  
+            time.sleep(7)  
 
         else:
-            time.sleep(10)      
+            time.sleep(7)      
     
 
     
